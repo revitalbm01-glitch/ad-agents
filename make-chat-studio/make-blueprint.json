@@ -177,7 +177,7 @@
                   {
                     "role": "user",
                     "inputType": "single",
-                    "content": "אתה מעצב גרפי וקופירייטר בכיר שיוצר מודעות לאינסטגרם בעברית.\n\nהבקשה הנוכחית של המשתמשת:\n<request>{{1.message}}</request>\n\nבקשות קודמות בשיחה הזו (ריק אם זו ההתחלה):\n<history>{{1.history}}</history>\n\nהעיצוב הקודם (ריק = מודעה חדשה). אם יש עיצוב קודם, הבקשה היא תיקון: שנה רק את מה שהתבקש ושמור על כל השאר בדיוק כמו שהוא:\n<previous_html>{{1.prev_html}}</previous_html>\n\nטקסט הפוסט הנוכחי (ייתכן שהמשתמשת ערכה אותו בעצמה, אז זו הגרסה הקובעת):\n<previous_caption>{{1.prev_caption}}</previous_caption>\n\nמה לתקן הפעם: {{ifempty(1.scope; \"both\")}}\n- both: מודעה חדשה, או תיקון שיכול לגעת גם בעיצוב וגם בטקסט.\n- image: לתקן רק את עיצוב התמונה. את טקסט הפוסט להחזיר מילה במילה כמו ב-previous_caption.\n- text: לתקן רק את טקסט הפוסט, על בסיס previous_caption. במקום ה-HTML לכתוב רק את המילה SAME.\n\nצור:\n1. עיצוב מודעה כ-HTML אחד שלם, שיצולם כתמונה בגודל 1080x1350 פיקסלים.\n2. טקסט לפוסט באינסטגרם.\n\nכללי העיצוב:\n- כל המודעה בתוך <div class=\"ad\" dir=\"rtl\"> אחד, ברוחב 1080px ובגובה 1350px בדיוק, עם overflow:hidden ו-position:relative. כל ה-CSS בתגית <style> אחת לפני ה-div, כולל html,body{margin:0;padding:0;width:1080px;height:1350px}.\n- גופנים רק מ-Google Fonts עם תמיכה בעברית, דרך @import בשורה הראשונה של ה-style: Heebo, Rubik, Assistant, Secular One, Suez One, Frank Ruhl Libre, Karantina, Amatic SC, Varela Round, Bellefair, Noto Serif Hebrew. בחר זוג שמתאים לאופי ההודעה.\n- תמונה מצורפת: <photo>{{1.photo_info}}</photo>\n  אם יש כאן תמונה, חובה לשלב אותה בעיצוב כרכיב מרכזי, עם התגית <img src=\"PHOTO_URL\" alt=\"\"> בדיוק כך (המחרוזת PHOTO_URL תוחלף אוטומטית בתמונה האמיתית, אל תשנה אותה). אתה לא רואה את התמונה, אז: שים אותה במסגרת גדולה (לפחות 45% מגובה המודעה) או כרקע מלא, עם object-fit:cover ו-object-position:center 30% כדי שהפנים יישארו בפריים. אל תכתוב טקסט על אזור הפנים. אם הטקסט עולה על התמונה, הוסף שכבת גרדיאנט כהה מתחת לטקסט כדי שיהיה קריא. התאם את צורת המסגרת ליחס של התמונה.\n  אם בבקשה יש קישור לאתר, הוא שימש רק להבאת התמונה: אל תכתוב את כתובת הקישור על התמונה.\n  אם התגית ריקה אבל בעיצוב הקודם יש PHOTO_URL, המשתמשת הסירה את התמונה: הוצא אותה מהעיצוב.\n- בלי תמונות חיצוניות אחרות, אלא אם המשתמשת נתנה קישור לתמונה בבקשה. את האווירה בונים עם צבע, גרדיאנטים, צורות, SVG פשוט בתוך הקוד, טיפוגרפיה גדולה ואימוג'י במשורה.\n- היררכיה ברורה: כותרת ראשית גדולה (70–140px) שנקראת ממרחק, שורת משנה, לכל היותר 2–3 פרטים קצרים (תאריך, מחיר, מקום) ו-CTA בולט. עד כ-30 מילים על התמונה.\n- ניגודיות גבוהה, שוליים פנימיים של 70px לפחות, ששום טקסט לא ייחתך ולא יצא מהמסגרת. text-wrap:balance בכותרות.\n- סגנון שמתאים לנושא (חגיגי, יוקרתי, רגוע, אנרגטי, רוחני...). כל מודעה חדשה בפלטה ובקומפוזיציה אחרת, לא תבנית קבועה.\n- אל תמציא עובדות: מחירים, תאריכים, כתובות, טלפונים ושמות מופיעים רק אם הם בבקשה.\n- בלי JavaScript.\n\nכללי הטקסט לפוסט:\n- עברית טבעית וחמה, 300–900 תווים: שורת פתיחה תופסת, פסקה קצרה עם העיקר, קריאה לפעולה, 2–4 אימוג'י, ואז שורה ריקה ו-4–8 האשטגים בעברית.\n- בלי מרקדאון ובלי להמציא פרטים.\n\nהחזר בדיוק בפורמט הזה, בלי שום טקסט לפני או אחרי:\n===CAPTION===\n(טקסט הפוסט)\n===HTML===\n(ה-HTML המלא)\n===END===\n"
+                    "content": "אתה מעצב גרפי וקופירייטר בכיר שיוצר מודעות לאינסטגרם בעברית.\n\nהבקשה הנוכחית של המשתמשת:\n<request>{{1.message}}</request>\n\nבקשות קודמות בשיחה הזו (ריק אם זו ההתחלה):\n<history>{{1.history}}</history>\n\nהעיצוב הקודם (ריק = מודעה חדשה). אם יש עיצוב קודם, הבקשה היא תיקון: שנה רק את מה שהתבקש ושמור על כל השאר בדיוק כמו שהוא:\n<previous_html>{{1.prev_html}}</previous_html>\n\nטקסט הפוסט הנוכחי (ייתכן שהמשתמשת ערכה אותו בעצמה, אז זו הגרסה הקובעת):\n<previous_caption>{{1.prev_caption}}</previous_caption>\n\nמה לתקן הפעם: {{ifempty(1.scope; \"both\")}}\n- both: מודעה חדשה, או תיקון שיכול לגעת גם בעיצוב וגם בטקסט.\n- image: לתקן רק את עיצוב התמונה. את טקסט הפוסט להחזיר מילה במילה כמו ב-previous_caption.\n- text: לתקן רק את טקסט הפוסט, על בסיס previous_caption. במקום ה-HTML לכתוב רק את המילה SAME.\n\nצור:\n1. עיצוב מודעה כ-HTML אחד שלם, שיצולם כתמונה בגודל 1080x1350 פיקסלים.\n2. טקסט לפוסט באינסטגרם.\n\nכללי העיצוב:\n- כל המודעה בתוך <div class=\"ad\" dir=\"rtl\"> אחד, ברוחב 1080px ובגובה 1350px בדיוק, עם overflow:hidden ו-position:relative. כל ה-CSS בתגית <style> אחת לפני ה-div, כולל html,body{margin:0;padding:0;width:1080px;height:1350px}.\n- גופנים רק מ-Google Fonts עם תמיכה בעברית, דרך @import בשורה הראשונה של ה-style: Heebo, Rubik, Assistant, Secular One, Suez One, Frank Ruhl Libre, Karantina, Amatic SC, Varela Round, Bellefair, Noto Serif Hebrew. בחר זוג שמתאים לאופי ההודעה.\n- תמונה מצורפת: <photo>{{1.photo_info}}</photo>\n  אם יש כאן תמונה, חובה לשלב אותה בעיצוב כרכיב מרכזי, עם התגית <img src=\"PHOTO_URL\" alt=\"\"> בדיוק כך (המחרוזת PHOTO_URL תוחלף אוטומטית בתמונה האמיתית, אל תשנה אותה). אתה לא רואה את התמונה, אז: שים אותה במסגרת גדולה (לפחות 45% מגובה המודעה) או כרקע מלא, עם object-fit:cover ו-object-position:center 30% כדי שהפנים יישארו בפריים. אל תכתוב טקסט על אזור הפנים. אם הטקסט עולה על התמונה, הוסף שכבת גרדיאנט כהה מתחת לטקסט כדי שיהיה קריא. התאם את צורת המסגרת ליחס של התמונה.\n  אם בבקשה יש קישור לאתר, הוא שימש רק להבאת התמונה: אל תכתוב את כתובת הקישור על התמונה.\n  אם התגית ריקה אבל בעיצוב הקודם יש PHOTO_URL, המשתמשת הסירה את התמונה: הוצא אותה מהעיצוב.\n- אם לא צורפה תמונה (התגית photo ריקה) ובעיצוב הקודם אין תמונה, בחר מספריית התמונות של \"דקה לנשמה\" את התמונה שהכי מתאימה להודעה ושלב אותה כרכיב מרכזי בעיצוב, עם <img src=\"...\"> וכתובת מלאה מהרשימה:\n  https://ronals-prayer-page.lovable.app/posts/photo-1.jpg  שני בחורים עם כיפות לומדים יחד בספר בבית מדרש, מחייכים\n  https://ronals-prayer-page.lovable.app/posts/photo-2.jpg  בחור עם כיפה באוטובוס מחייך לטלפון\n  https://ronals-prayer-page.lovable.app/posts/photo-3.jpg  אישה דתייה עם כיסוי ראש מחייכת לטלפון\n  https://ronals-prayer-page.lovable.app/posts/photo-4.jpg  אבא ובן לומדים יחד ליד שולחן באור חם\n  https://ronals-prayer-page.lovable.app/posts/photo-5.jpg  קבוצת בחורים בחולצות לבנות לומדים ומתווכחים בבית מדרש גדול\n  https://ronals-prayer-page.lovable.app/posts/photo-6.jpg  חייל במדים עם כיפה מחייך לטלפון בשטח\n  כל התמונות ריבועיות. אותם כללים כמו לתמונה מצורפת: מסגרת גדולה או רקע מלא, object-fit:cover, פנים בפריים וגרדיאנט מתחת לטקסט שעולה על התמונה. בעיצוב חדש העדף תמונה על פני עיצוב בלי תמונה. רק אם אף תמונה לא קשורה לנושא בכלל, עצב בלי תמונה.\n- בלי תמונות חיצוניות אחרות, אלא אם המשתמשת נתנה קישור לתמונה בבקשה. מסביב לתמונה, את האווירה בונים עם צבע, גרדיאנטים, צורות, SVG פשוט, טיפוגרפיה גדולה ואימוג'י במשורה.\n- היררכיה ברורה: כותרת ראשית גדולה (70–140px) שנקראת ממרחק, שורת משנה, לכל היותר 2–3 פרטים קצרים (תאריך, מחיר, מקום) ו-CTA בולט. עד כ-30 מילים על התמונה.\n- ניגודיות גבוהה, שוליים פנימיים של 70px לפחות, ששום טקסט לא ייחתך ולא יצא מהמסגרת. text-wrap:balance בכותרות.\n- סגנון שמתאים לנושא (חגיגי, יוקרתי, רגוע, אנרגטי, רוחני...). כל מודעה חדשה בפלטה ובקומפוזיציה אחרת, לא תבנית קבועה.\n- אל תמציא עובדות: מחירים, תאריכים, כתובות, טלפונים ושמות מופיעים רק אם הם בבקשה.\n- בלי JavaScript.\n\nכללי הטקסט לפוסט:\n- עברית טבעית וחמה, 300–900 תווים: שורת פתיחה תופסת, פסקה קצרה עם העיקר, קריאה לפעולה, 2–4 אימוג'י, ואז שורה ריקה ו-4–8 האשטגים בעברית.\n- בלי מרקדאון ובלי להמציא פרטים.\n\nהחזר בדיוק בפורמט הזה, בלי שום טקסט לפני או אחרי:\n===CAPTION===\n(טקסט הפוסט)\n===HTML===\n(ה-HTML המלא)\n===END===\n"
                   }
                 ]
               },
@@ -763,21 +763,17 @@
                                 {
                                   "flow": [
                                     {
-                                      "id": 74,
-                                      "module": "anthropic-claude:createAMessage",
+                                      "id": 80,
+                                      "module": "gateway:WebhookRespond",
                                       "version": 1,
-                                      "parameters": {
-                                        "__IMTCONN__": null
-                                      },
+                                      "parameters": {},
                                       "mapper": {
-                                        "model": "claude-sonnet-5-5",
-                                        "effort": "low",
-                                        "max_tokens": 9000,
-                                        "messages": [
+                                        "status": 200,
+                                        "body": "{{66.data.url}}.jpg<<<SPLIT>>>{{65.caption}}<<<SPLIT>>>{{65.html}}<<<SPLIT>>>🛠️ סבב 1 מצא: {{62.notes}}\n⚠️ אחרי תיקון אחד עדיין נשאר: {{72.notes}}",
+                                        "headers": [
                                           {
-                                            "role": "user",
-                                            "inputType": "single",
-                                            "content": "אתה המעצב של המודעה. עורך הקריאייטיב בדק את המודעה שלך ומצא בעיות שצריך לתקן לפני פרסום.\n\nהבקשה המקורית של המשתמשת:\n<request>{{1.message}}</request>\n\nהבעיות שנמצאו:\n<issues>{{72.notes}}</issues>\n\nה-HTML הנוכחי של המודעה:\n<html>{{65.html}}</html>\n\nטקסט הפוסט הנוכחי:\n<caption>{{65.caption}}</caption>\n\nתקן רק את הבעיות שנמצאו ושמור על כל השאר בדיוק כמו שהוא: אותה פלטה, אותם גופנים, אותה קומפוזיציה ואותו נוסח.\n- טקסטים שעולים זה על זה: הקטן גופן, קצר שורה, או סדר את האלמנטים בעמודה עם gap ולא במיקום מוחלט.\n- אם יש <img src=\"PHOTO_URL\"> השאר את המחרוזת PHOTO_URL בדיוק כמו שהיא.\n- אם הבעיה רק בטקסט הפוסט, החזר את ה-HTML בלי שינוי.\n\nהחזר בדיוק בפורמט הזה, בלי שום טקסט לפני או אחרי:\n===CAPTION===\n(טקסט הפוסט)\n===HTML===\n(ה-HTML המלא)\n===END===\n"
+                                            "key": "Content-Type",
+                                            "value": "text/plain; charset=utf-8"
                                           }
                                         ]
                                       },
@@ -785,7 +781,7 @@
                                         "designer": {
                                           "x": 5400,
                                           "y": 600,
-                                          "name": "המעצב מתקן: סבב 2"
+                                          "name": "נשאר משהו: מסומן ללקוח"
                                         }
                                       },
                                       "filter": {
@@ -799,199 +795,6 @@
                                             }
                                           ]
                                         ]
-                                      }
-                                    },
-                                    {
-                                      "id": 75,
-                                      "module": "util:SetVariables",
-                                      "version": 1,
-                                      "parameters": {},
-                                      "mapper": {
-                                        "scope": "roundtrip",
-                                        "variables": [
-                                          {
-                                            "name": "caption",
-                                            "value": "{{trim(substring(first(map(74.content; \"text\"; \"type\"; \"text\")); indexOf(first(map(74.content; \"text\"; \"type\"; \"text\")); \"===CAPTION===\") + 13; indexOf(first(map(74.content; \"text\"; \"type\"; \"text\")); \"===HTML===\")))}}"
-                                          },
-                                          {
-                                            "name": "html",
-                                            "value": "{{trim(substring(first(map(74.content; \"text\"; \"type\"; \"text\")); indexOf(first(map(74.content; \"text\"; \"type\"; \"text\")); \"===HTML===\") + 10; indexOf(first(map(74.content; \"text\"; \"type\"; \"text\")); \"===END===\")))}}"
-                                          }
-                                        ]
-                                      },
-                                      "metadata": {
-                                        "designer": {
-                                          "x": 5700,
-                                          "y": 600,
-                                          "name": "פירוק התיקון"
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "id": 76,
-                                      "module": "http:MakeRequest",
-                                      "version": 4,
-                                      "parameters": {
-                                        "authenticationType": "basicAuthConnection",
-                                        "basicAuthAccount": null
-                                      },
-                                      "mapper": {
-                                        "url": "https://hcti.io/v1/image",
-                                        "method": "post",
-                                        "timeout": 60,
-                                        "contentType": "urlEncoded",
-                                        "shareCookies": false,
-                                        "parseResponse": true,
-                                        "allowRedirects": true,
-                                        "stopOnHttpError": true,
-                                        "requestCompressedContent": true,
-                                        "urlEncodedBodyContent": [
-                                          {
-                                            "name": "html",
-                                            "value": "{{replace(75.html; \"PHOTO_URL\"; 1.photo)}}"
-                                          },
-                                          {
-                                            "name": "selector",
-                                            "value": ".ad"
-                                          },
-                                          {
-                                            "name": "viewport_width",
-                                            "value": "1080"
-                                          },
-                                          {
-                                            "name": "viewport_height",
-                                            "value": "1350"
-                                          },
-                                          {
-                                            "name": "device_scale",
-                                            "value": "1"
-                                          },
-                                          {
-                                            "name": "ms_delay",
-                                            "value": "1500"
-                                          }
-                                        ]
-                                      },
-                                      "metadata": {
-                                        "designer": {
-                                          "x": 6000,
-                                          "y": 600,
-                                          "name": "צילום אחרי תיקון 2"
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "id": 77,
-                                      "module": "http:MakeRequest",
-                                      "version": 4,
-                                      "parameters": {
-                                        "authenticationType": "noAuth"
-                                      },
-                                      "mapper": {
-                                        "url": "{{76.data.url}}.jpg",
-                                        "method": "get",
-                                        "timeout": 40,
-                                        "contentType": "",
-                                        "shareCookies": false,
-                                        "parseResponse": false,
-                                        "allowRedirects": true,
-                                        "stopOnHttpError": true,
-                                        "requestCompressedContent": true
-                                      },
-                                      "metadata": {
-                                        "designer": {
-                                          "x": 6300,
-                                          "y": 600,
-                                          "name": "הורדת המודעה לבדיקה"
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "id": 78,
-                                      "module": "anthropic-claude:createAMessage",
-                                      "version": 1,
-                                      "parameters": {
-                                        "__IMTCONN__": null
-                                      },
-                                      "mapper": {
-                                        "model": "claude-sonnet-5-5",
-                                        "effort": "low",
-                                        "max_tokens": 1200,
-                                        "messages": [
-                                          {
-                                            "role": "user",
-                                            "inputType": "multiple",
-                                            "content": [
-                                              {
-                                                "type": "image",
-                                                "source": {
-                                                  "filename": "ad.jpg",
-                                                  "data": "{{77.data}}"
-                                                }
-                                              },
-                                              {
-                                                "type": "text",
-                                                "text": "אתה עורך/ת קריאייטיב קפדני/ת שבודק/ת מודעת אינסטגרם בעברית לפני שהיא עולה. מצורפת התמונה הסופית של המודעה (1080x1350).\n\nהבקשה המקורית של המשתמשת:\n<request>{{1.message}}</request>\n\nטקסט הפוסט שייכתב מתחת לתמונה:\n<caption>{{75.caption}}</caption>\n\nבדוק/י רק את הדברים האלה, והסתכל/י על התמונה עצמה:\n1. טקסט שעולה על טקסט אחר, נחתך, יוצא מהמסגרת או נדחס בלי רווח.\n2. טקסט שקשה לקרוא: ניגודיות חלשה, קטן מדי, או כתוב על פנים של אנשים.\n3. עברית: שגיאות כתיב, מילים הפוכות או אותיות בסדר שגוי, ניקוד שבור.\n4. עובדות: רק פרט מוחשי (מחיר, תאריך, שעה, כתובת, טלפון, שם של אדם או מקום) שמופיע בתמונה או בטקסט ולא היה בבקשה. ניסוח כללי, תיאור של קהל היעד והאשטגים אינם עובדות.\n5. טקסט הפוסט: בערך 300–900 תווים, יש קריאה לפעולה והאשטגים, בלי מרקדאון.\n\nאל תעיר/י על טעם אישי או סגנון.\nהחזר/י FIX רק אם יש בעיה שחייבים לתקן לפני פרסום. אם הכל תקין או שיש רק הערה קטנה, החזר/י OK.\n\nהחזר/י בדיוק בפורמט הזה, בלי שום טקסט לפני או אחרי:\n===VERDICT===\nOK או FIX\n===NOTES===\nאם FIX: עד 4 שורות קצרות, כל שורה בעיה אחת והיכן היא.\nאם OK: שורה אחת קצרה על מה נבדק.\n===END===\n"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      "metadata": {
-                                        "designer": {
-                                          "x": 6600,
-                                          "y": 600,
-                                          "name": "סוכן מבקר: סבב 3"
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "id": 79,
-                                      "module": "util:SetVariables",
-                                      "version": 1,
-                                      "parameters": {},
-                                      "mapper": {
-                                        "scope": "roundtrip",
-                                        "variables": [
-                                          {
-                                            "name": "verdict",
-                                            "value": "{{trim(substring(first(map(78.content; \"text\"; \"type\"; \"text\")); indexOf(first(map(78.content; \"text\"; \"type\"; \"text\")); \"===VERDICT===\") + 13; indexOf(first(map(78.content; \"text\"; \"type\"; \"text\")); \"===NOTES===\")))}}"
-                                          },
-                                          {
-                                            "name": "notes",
-                                            "value": "{{trim(substring(first(map(78.content; \"text\"; \"type\"; \"text\")); indexOf(first(map(78.content; \"text\"; \"type\"; \"text\")); \"===NOTES===\") + 11; indexOf(first(map(78.content; \"text\"; \"type\"; \"text\")); \"===END===\")))}}"
-                                          }
-                                        ]
-                                      },
-                                      "metadata": {
-                                        "designer": {
-                                          "x": 6900,
-                                          "y": 600,
-                                          "name": "תוצאת הבדיקה"
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "id": 80,
-                                      "module": "gateway:WebhookRespond",
-                                      "version": 1,
-                                      "parameters": {},
-                                      "mapper": {
-                                        "status": 200,
-                                        "body": "{{76.data.url}}.jpg<<<SPLIT>>>{{75.caption}}<<<SPLIT>>>{{75.html}}<<<SPLIT>>>🛠️ סבב 1 מצא: {{62.notes}}\n🛠️ סבב 2 מצא: {{72.notes}}\n{{if(contains(79.verdict; \"FIX\"); \"⚠️ אחרי שני סבבי תיקון עדיין נשאר: \"; \"✅ תוקן ועבר בדיקה חוזרת\")}}{{if(contains(79.verdict; \"FIX\"); 79.notes; \"\")}}",
-                                        "headers": [
-                                          {
-                                            "key": "Content-Type",
-                                            "value": "text/plain; charset=utf-8"
-                                          }
-                                        ]
-                                      },
-                                      "metadata": {
-                                        "designer": {
-                                          "x": 7200,
-                                          "y": 600,
-                                          "name": "סיום אחרי 3 סבבים"
-                                        }
                                       }
                                     }
                                   ]
