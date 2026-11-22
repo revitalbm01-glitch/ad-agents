@@ -354,7 +354,44 @@
                           "y": 300,
                           "name": "הפיכת העיצוב לתמונה"
                         }
-                      }
+                      },
+                      "onerror": [
+                        {
+                          "id": 100,
+                          "module": "gateway:WebhookRespond",
+                          "version": 1,
+                          "parameters": {},
+                          "mapper": {
+                            "status": 429,
+                            "body": "QUOTA: נגמרה המכסה החודשית של צילום המודעות (hcti.io). העיצוב נוצר, אבל אי אפשר להפוך אותו לתמונה עד שהמכסה תתאפס. אפשר לנסות שוב בעוד כמה ימים.",
+                            "headers": [
+                              {
+                                "key": "Content-Type",
+                                "value": "text/plain; charset=utf-8"
+                              }
+                            ]
+                          },
+                          "metadata": {
+                            "designer": {
+                              "x": 1800,
+                              "y": 600,
+                              "name": "אין מכסת תמונות"
+                            }
+                          }
+                        },
+                        {
+                          "id": 101,
+                          "module": "builtin:Ignore",
+                          "version": 1,
+                          "mapper": {},
+                          "metadata": {
+                            "designer": {
+                              "x": 2100,
+                              "y": 600
+                            }
+                          }
+                        }
+                      ]
                     },
                     {
                       "id": 60,
@@ -616,7 +653,44 @@
                                   "y": 450,
                                   "name": "צילום אחרי תיקון 1"
                                 }
-                              }
+                              },
+                              "onerror": [
+                                {
+                                  "id": 102,
+                                  "module": "gateway:WebhookRespond",
+                                  "version": 1,
+                                  "parameters": {},
+                                  "mapper": {
+                                    "status": 200,
+                                    "body": "{{5.data.url}}.jpg<<<SPLIT>>>{{4.caption}}<<<SPLIT>>>{{4.html}}<<<SPLIT>>>⚠️ הבודק מצא: {{62.notes}}\nלא נשארה מכסת תמונות לתיקון, אז זו הגרסה המקורית. אפשר לבקש תיקון ידני בעוד כמה ימים.",
+                                    "headers": [
+                                      {
+                                        "key": "Content-Type",
+                                        "value": "text/plain; charset=utf-8"
+                                      }
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "designer": {
+                                      "x": 3900,
+                                      "y": 750,
+                                      "name": "אין מכסה לתיקון: הגרסה המקורית"
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": 103,
+                                  "module": "builtin:Ignore",
+                                  "version": 1,
+                                  "mapper": {},
+                                  "metadata": {
+                                    "designer": {
+                                      "x": 4200,
+                                      "y": 750
+                                    }
+                                  }
+                                }
+                              ]
                             },
                             {
                               "id": 70,

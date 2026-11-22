@@ -378,7 +378,9 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
         var parts = r.text.split('<<<SPLIT>>>');
         if (!r.ok || parts.length < 3) {
           box.className = 'msg bot err';
-          box.textContent = r.status === 401 ? 'קוד הגישה שגוי. רעננו את הדף והזינו אותו שוב.' : 'משהו השתבש. נסו שוב. (' + r.text.slice(0, 200) + ')';
+          box.textContent = r.status === 401 ? 'קוד הגישה שגוי. רעננו את הדף והזינו אותו שוב.'
+            : (r.status === 429 || /QUOTA:|Too Many Requests|RateLimit/i.test(r.text)) ? '📸 ' + (r.text.indexOf('QUOTA:') === 0 ? r.text.slice(6).trim() : 'נגמרה המכסה החודשית של צילום המודעות. אפשר לנסות שוב בעוד כמה ימים.')
+            : 'משהו השתבש. נסו שוב. (' + r.text.slice(0, 200) + ')';
           if (r.status === 401) { try { localStorage.removeItem('adkey'); } catch(e) {} }
           return;
         }
