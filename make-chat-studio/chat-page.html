@@ -135,6 +135,25 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
 .grid button:hover,.grid button:focus-visible{border-color:var(--gold)}
 .grid img{width:100%;height:100%;object-fit:cover;display:block}
 .gal .note{padding:6px 2px}
+.qc{border-radius:12px;padding:9px 11px;font-size:13.5px;line-height:1.55;white-space:pre-wrap;background:#eef6f0;color:#24563a;border:1px solid #cfe6d6}
+.qc.warn{background:#fff4e5;color:#7a4a05;border-color:#f3d6a6}
+.vtag{font-size:12px;color:var(--muted)}
+.restore{display:none}
+.post.old .restore{display:inline-flex}
+.post.old{opacity:.86}
+.ready{font-weight:700;color:var(--gold);font-size:14px}
+.hist{position:fixed;z-index:20;top:calc(64px + env(safe-area-inset-top,0px));inset-inline-end:max(12px,env(safe-area-inset-right,0px));width:min(420px,calc(100vw - 24px));max-height:calc(100% - 150px);overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 20px 50px rgba(94,33,48,.22);padding:12px}
+.hist .gal-h{position:sticky;top:-12px;background:var(--card);padding:4px 0 8px}
+.had{border-top:1px solid var(--line);padding:10px 0}
+.had h5{margin:0 0 6px;font-size:14.5px;line-height:1.4}
+.hv{display:flex;gap:10px;align-items:flex-start;padding:6px;border-radius:12px;cursor:pointer;background:transparent;border:0;width:100%;text-align:right;font-weight:400}
+.hv:hover{background:var(--card-2)}
+.hv img{width:54px;height:68px;object-fit:cover;border-radius:8px;flex:none;background:var(--card-2)}
+.hv div{min-width:0;font-size:13px;line-height:1.45}
+.hv b{font-size:13.5px}
+.hv small{display:block;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.pubd{display:inline-block;background:#2f7d4f;color:#fff;border-radius:999px;padding:1px 8px;font-size:11.5px;margin-inline-start:6px}
+#keybox input{width:130px}
 .hint2{max-width:760px;margin:6px auto 0;text-align:center;color:#a58e93;font-size:12px}
 
 @media (max-width:520px){
@@ -157,7 +176,10 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
     <div class="mark" aria-hidden="true"><svg viewBox="0 0 18 30"><path class="flame" d="M9 0C13 6 18 11 18 19a9 9 0 0 1-18 0C0 11 5 6 9 0z" fill="#ffc35c"/><path class="flame" d="M9 12c2 3 4 5 4 8a4 4 0 0 1-8 0c0-3 2-5 4-8z" fill="#fff3d0"/></svg></div>
     <div><h1>סטודיו מודעות</h1><small>מעצבים ומפרסמים ב-<b><bdi dir="ltr">@ronel_daka_laneshama</bdi></b></small></div>
   </div>
-  <div id="keybox"><input id="key" type="password" placeholder="קוד גישה" autocomplete="off" aria-label="קוד גישה"><button class="ghost" id="savekey" type="button">כניסה</button></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div id="keybox"><input id="who" type="text" placeholder="השם שלך" autocomplete="name" aria-label="השם שלך"><input id="key" type="password" placeholder="קוד גישה" autocomplete="off" aria-label="קוד גישה"><button class="ghost" id="savekey" type="button">כניסה</button></div>
+    <button class="ghost" id="histbtn" type="button" aria-label="היסטוריית גרסאות">🗂️ גרסאות</button>
+  </div>
 </header>
 <main id="log">
   <div class="wrap" id="wrap">
@@ -180,6 +202,10 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
     </section>
   </div>
 </main>
+<div id="hist" class="hist" hidden>
+  <div class="gal-h"><b>היסטוריית גרסאות</b><button type="button" class="ghost" id="histclose" aria-label="סגירה">✕</button></div>
+  <div id="histbody"><div class="note">טוען…</div></div>
+</div>
 <footer>
   <div id="gal" class="gal" hidden>
     <div class="gal-h"><b>בחירת תמונה</b><button type="button" class="ghost" id="galclose" aria-label="סגירת הגלריה">✕</button></div>
@@ -206,7 +232,7 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
   var keyEl = document.getElementById('key');
   var sendBtn = document.getElementById('send');
   var textEl = document.getElementById('text');
-  var state = { html: '', image: '', history: [], lastTa: null };
+  var state = { html: '', image: '', history: [], lastTa: null, versions: [], adId: '' };
   var photo = { data: '', info: '', isNew: false };
   var SCOPES = [['both', 'גם וגם'], ['image', 'עיצוב התמונה'], ['text', 'טקסט הפוסט']];
   var fixCount = 0;
@@ -285,10 +311,13 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
     }).catch(function(){ igLoaded = false; document.getElementById('gig').innerHTML = '<div class="note">אין חיבור. נסו שוב.</div>'; });
   };
 
+  var whoEl = document.getElementById('who');
   function getKey(){ try { return localStorage.getItem('adkey') || keyEl.value; } catch(e) { return keyEl.value; } }
-  try { if (localStorage.getItem('adkey')) document.getElementById('keybox').hidden = true; } catch(e) {}
+  function getWho(){ try { return localStorage.getItem('adname') || whoEl.value.trim(); } catch(e) { return whoEl.value.trim(); } }
+  try { if (localStorage.getItem('adkey') && localStorage.getItem('adname')) document.getElementById('keybox').hidden = true; } catch(e) {}
   document.getElementById('savekey').onclick = function(){
-    try { localStorage.setItem('adkey', keyEl.value); } catch(e) {}
+    if (!whoEl.value.trim()) { whoEl.focus(); return; }
+    try { localStorage.setItem('adkey', keyEl.value); localStorage.setItem('adname', whoEl.value.trim()); } catch(e) {}
     document.getElementById('keybox').hidden = true;
     textEl.focus();
   };
@@ -301,13 +330,13 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
       .then(function(r){ return r.text().then(function(t){ return { ok: r.ok, status: r.status, text: t }; }); });
   }
 
-  var STEPS = ['קורא את ההודעה', 'בוחר צבעים וגופנים', 'מעצב את הכותרת', 'כותב את הטקסט לפוסט', 'מסדר את הפרטים', 'מלטש את העיצוב', 'כמעט מוכן'];
+  var STEPS = ['קורא את ההודעה', 'בוחר צבעים וגופנים', 'מעצב את הכותרת', 'כותב את הטקסט לפוסט', 'הסוכן המבקר בודק את המודעה', 'בודק כתיב, חפיפות ועובדות', 'מתקן לפי הביקורת אם צריך', 'בדיקה חוזרת', 'כמעט מוכן לאישור'];
   function waiting(box, first){
     box.className = 'wait';
     box.innerHTML = '<div class="shim">' + FLAME + '</div><div class="st"></div>';
     var st = box.querySelector('.st'), i = 0;
     st.textContent = first || STEPS[0];
-    var t = setInterval(function(){ i = Math.min(i + 1, STEPS.length - 1); st.textContent = STEPS[i]; }, 3200);
+    var t = setInterval(function(){ i = Math.min(i + 1, STEPS.length - 1); st.textContent = STEPS[i]; }, 4500);
     scrollEnd();
     return function(){ clearInterval(t); };
   }
@@ -315,8 +344,9 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
   var busy = false;
   function requestDesign(msg, scope, label){
     if (busy) return;
-    if (!getKey()) { document.getElementById('keybox').hidden = false; keyEl.focus(); add('bot err', 'צריך להזין קוד גישה למעלה ולהקיש "כניסה".'); return; }
+    if (!getKey() || !getWho()) { document.getElementById('keybox').hidden = false; (getWho() ? keyEl : whoEl).focus(); add('bot err', 'צריך להזין למעלה את השם שלך ואת קוד הגישה ולהקיש "כניסה".'); return; }
     hideWelcome();
+    var change = !state.html ? 'מודעה חדשה' : scope === 'text' ? 'תיקון טקסט הפוסט' : scope === 'image' ? 'תיקון עיצוב התמונה' : label ? 'תיקון עיצוב וטקסט' : 'בקשת שינוי חופשית';
     busy = true; sendBtn.disabled = true;
     var mine = add('me', label ? label + ': ' + msg : msg);
     var box = add('wait');
@@ -353,7 +383,11 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
           return;
         }
         state.history.push(msg); state.html = parts[2]; state.image = parts[0].trim();
-        showAd(box, state.image, parts[1].trim());
+        if (!state.adId) state.adId = 'AD-' + new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
+        var v = { img: state.image, caption: parts[1].trim(), html: parts[2], note: (parts[3] || '').trim(), request: msg, change: change, by: getWho(), photo: /^https?:/.test(photo.data) ? photo.data : '' };
+        state.versions.push(v);
+        showAd(box, v, state.versions.length);
+        post({ action: 'log', ad_id: state.adId, version: state.versions.length, by: v.by, request: msg, change: change, review: v.note, image: v.img, caption: v.caption, html: v.html }).catch(function(){});
       });
     }).catch(function(){ stop(); busy = false; sendBtn.disabled = false; box.className = 'msg bot err'; box.textContent = 'אין חיבור. נסו שוב.'; });
   }
@@ -382,24 +416,39 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
     });
   }
 
-  function showAd(box, img, caption){
+  function markCurrent(box){
+    Array.prototype.forEach.call(document.querySelectorAll('.post'), function(p){ p.classList.toggle('old', p !== box); });
+  }
+  function showAd(box, v, n){
+    var img = v.img, caption = v.caption;
     box.className = 'post'; box.textContent = '';
+    var passed = v.note.indexOf('⚠️') < 0;
     var head = el('div', 'post-h');
     var ava = el('div', 'ava'); var ai = el('i', '', '🕯️'); ava.appendChild(ai); head.appendChild(ava);
-    var who = el('div'); who.appendChild(el('b', '', 'ronel_daka_laneshama')); who.appendChild(el('small', '', 'כך זה ייראה באינסטגרם')); head.appendChild(who);
-    head.appendChild(el('span', 'tag', 'טיוטה'));
+    var who = el('div'); who.appendChild(el('b', '', 'ronel_daka_laneshama')); who.appendChild(el('small', '', 'גרסה ' + n + ' · ביקש/ה: ' + v.by + ' · ' + v.change)); head.appendChild(who);
+    head.appendChild(el('span', 'tag', 'גרסה ' + n + ' · ממתין לאישור'));
     box.appendChild(head);
     var im = el('img', 'ad'); im.src = img; im.alt = 'עיצוב המודעה'; box.appendChild(im);
     var body = el('div', 'post-b'); box.appendChild(body);
+    if (v.note) body.appendChild(el('div', 'qc' + (passed ? '' : ' warn'), v.note));
+    body.appendChild(el('div', 'ready', passed ? 'המודעה עברה את הבדיקה ומחכה לאישור שלך' : 'שימו לב להערות הבודק לפני שמאשרים'));
     body.appendChild(el('div', 'lbl', 'טקסט הפוסט · אפשר לערוך כאן ישירות'));
     var ta = el('textarea'); ta.value = caption; ta.setAttribute('aria-label', 'טקסט הפוסט'); body.appendChild(ta);
     state.lastTa = ta;
     var row = el('div', 'row');
-    var pub = el('button', 'pub', 'פרסום לאינסטגרם'); pub.type = 'button';
+    var pub = el('button', 'pub', '✓ מאשר/ת ומפרסם/ת'); pub.type = 'button';
+    var restore = el('button', 'soft restore', '↩️ להמשיך מגרסה זו'); restore.type = 'button';
     var fixB = el('button', 'soft', '✏️ תיקון'); fixB.type = 'button';
     var fresh = el('button', 'soft', '✨ מודעה חדשה'); fresh.type = 'button';
     var open = el('a', 'link', 'פתיחה בגודל מלא'); open.href = img; open.target = '_blank'; open.rel = 'noopener';
-    row.appendChild(pub); row.appendChild(fixB); row.appendChild(fresh); row.appendChild(open); body.appendChild(row);
+    row.appendChild(pub); row.appendChild(fixB); row.appendChild(restore); row.appendChild(fresh); row.appendChild(open); body.appendChild(row);
+    markCurrent(box);
+    restore.onclick = function(){
+      state.html = v.html; state.image = v.img; state.lastTa = ta;
+      if (v.photo) { setPhoto(v.photo, 'צורפה תמונה מגרסה קודמת.'); photo.isNew = false; }
+      markCurrent(box);
+      add('bot note', 'ממשיכים מגרסה ' + n + '. תיקון הבא ייבנה עליה.');
+    };
 
     var n = ++fixCount;
     var fix = el('div', 'fix'); fix.hidden = true;
@@ -417,7 +466,7 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
     fixB.onclick = function(){ fix.hidden = !fix.hidden; if (!fix.hidden) { fta.focus(); scrollEnd(); } };
     fsend.onclick = function(){
       var m = fta.value.trim(); if (!m) { fta.focus(); return; }
-      if (state.lastTa !== ta) { add('bot err', 'אפשר לתקן רק את הגרסה האחרונה. השתמשו בכפתור התיקון שמתחת למודעה האחרונה.'); return; }
+      if (state.lastTa !== ta) { add('bot err', 'זו לא הגרסה הנוכחית. לחצו קודם "↩️ להמשיך מגרסה זו".'); return; }
       var s = fix.querySelector('input:checked').value;
       var lbl = SCOPES.filter(function(x){ return x[0] === s; })[0][1];
       fix.hidden = true; fta.value = '';
@@ -426,16 +475,61 @@ form:focus-within{border-color:rgba(122,46,63,.45);box-shadow:0 0 0 4px rgba(122
 
     var armed = false;
     pub.onclick = function(){
-      if (!armed) { armed = true; pub.classList.add('confirm'); pub.textContent = 'בטוח? לחצו שוב לפרסום'; return; }
+      if (!armed) { armed = true; pub.classList.add('confirm'); pub.textContent = 'בטוח? לחצו שוב לפרסום גרסה ' + n; return; }
       pub.disabled = true; pub.textContent = 'מפרסם…';
-      post({ action: 'publish', image_url: img, caption: ta.value }).then(function(r){
-        if (r.ok && r.text.indexOf('ok') === 0) { row.innerHTML = '<span class="done">✓ פורסם באינסטגרם</span>'; fix.hidden = true; box.querySelector('.tag').textContent = 'פורסם'; }
-        else { pub.disabled = false; armed = false; pub.classList.remove('confirm'); pub.textContent = 'פרסום לאינסטגרם'; add('bot err', 'הפרסום לא הצליח: ' + (r.status === 401 ? 'קוד הגישה שגוי.' : r.text.slice(0, 300))); }
-      }).catch(function(){ pub.disabled = false; armed = false; pub.classList.remove('confirm'); pub.textContent = 'פרסום לאינסטגרם'; add('bot err', 'אין חיבור. נסו שוב.'); });
+      post({ action: 'publish', image_url: img, caption: ta.value, ad_id: state.adId, version: n, by: getWho() }).then(function(r){
+        if (r.ok && r.text.indexOf('ok') === 0) { row.innerHTML = '<span class="done">✓ גרסה ' + n + ' אושרה ופורסמה באינסטגרם</span>'; fix.hidden = true; box.querySelector('.tag').textContent = 'גרסה ' + n + ' · פורסם'; }
+        else { pub.disabled = false; armed = false; pub.classList.remove('confirm'); pub.textContent = '✓ מאשר/ת ומפרסם/ת'; add('bot err', 'הפרסום לא הצליח: ' + (r.status === 401 ? 'קוד הגישה שגוי.' : r.text.slice(0, 300))); }
+      }).catch(function(){ pub.disabled = false; armed = false; pub.classList.remove('confirm'); pub.textContent = '✓ מאשר/ת ומפרסם/ת'; add('bot err', 'אין חיבור. נסו שוב.'); });
     };
-    fresh.onclick = function(){ state = { html: '', image: '', history: [], lastTa: null }; setPhoto('', ''); photoIn.value = ''; add('bot', 'מתחילים מודעה חדשה. מה ההודעה?'); textEl.focus(); };
+    fresh.onclick = function(){ state = { html: '', image: '', history: [], lastTa: null, versions: [], adId: '' }; setPhoto('', ''); photoIn.value = ''; add('bot', 'מתחילים מודעה חדשה. מה ההודעה?'); textEl.focus(); };
     scrollEnd();
   }
+
+  var hist = document.getElementById('hist');
+  document.getElementById('histclose').onclick = function(){ hist.hidden = true; };
+  document.getElementById('histbtn').onclick = function(){
+    hist.hidden = !hist.hidden; if (hist.hidden) return;
+    var hb = document.getElementById('histbody');
+    if (!getKey()) { hb.innerHTML = '<div class="note">צריך להזין שם וקוד גישה כדי לראות את ההיסטוריה.</div>'; return; }
+    hb.innerHTML = '<div class="note">טוען…</div>';
+    post({ action: 'history' }).then(function(r){
+      var rows = []; try { rows = JSON.parse(r.text) || []; } catch(e) {}
+      // columns: 0 time, 1 ad_id, 2 version, 3 event, 4 by, 5 request, 6 change, 7 review, 8 image, 9 caption, 10 post_id, 11 html
+      var ads = {}, order = [];
+      rows.forEach(function(c){
+        var id = c[1]; if (!id) return;
+        if (!ads[id]) { ads[id] = { id: id, versions: {}, pub: {} }; order.push(id); }
+        if (c[3] === 'אושר ופורסם') ads[id].pub[c[2]] = { by: c[4], time: c[0] };
+        else ads[id].versions[c[2]] = { time: c[0], by: c[4] || '', request: c[5] || '', change: c[6] || '', note: c[7] || '', img: c[8] || '', caption: c[9] || '', html: c[11] || '' };
+      });
+      hb.textContent = '';
+      if (!order.length) { hb.appendChild(el('div', 'note', 'עדיין אין גרסאות ביומן.')); return; }
+      order.reverse().forEach(function(id){
+        var a = ads[id], nums = Object.keys(a.versions).sort(function(x, y){ return x - y; });
+        if (!nums.length) return;
+        var sec = el('div', 'had'); sec.appendChild(el('h5', '', a.versions[nums[0]].request));
+        nums.forEach(function(k){
+          var v = a.versions[k], b = el('button', 'hv'); b.type = 'button';
+          var im = el('img'); im.src = v.img; im.alt = ''; im.loading = 'lazy'; b.appendChild(im);
+          var d = el('div'); var t = el('b', '', 'גרסה ' + k + ' · ' + v.change);
+          if (a.pub[k]) t.appendChild(el('span', 'pubd', 'אושר ופורסם ע"י ' + a.pub[k].by));
+          d.appendChild(t); d.appendChild(el('small', '', v.by + ' · ' + v.time)); d.appendChild(el('small', '', v.note.split('\n')[0]));
+          b.appendChild(d);
+          b.onclick = function(){
+            hist.hidden = true; hideWelcome();
+            state = { html: v.html, image: v.img, history: [a.versions[nums[0]].request], lastTa: null, versions: [], adId: id };
+            nums.forEach(function(j){ var x = a.versions[j]; state.versions.push({ img: x.img, caption: x.caption, html: x.html, note: x.note, request: x.request, change: x.change, by: x.by, photo: '' }); });
+            add('bot note', 'נפתחה מהיומן: גרסה ' + k + ' מתוך ' + nums.length + '. אפשר לתקן ממנה או לאשר ולפרסם.');
+            var box = add('wait'); showAd(box, state.versions[k - 1], Number(k));
+            if (!v.html) add('bot note', 'לגרסה הזו לא נשמר קוד העיצוב, אז אפשר לתקן בה רק את טקסט הפוסט.');
+          };
+          sec.appendChild(b);
+        });
+        hb.appendChild(sec);
+      });
+    }).catch(function(){ hb.innerHTML = '<div class="note">אין חיבור. נסו שוב.</div>'; });
+  };
 
   document.getElementById('f').onsubmit = function(e){
     e.preventDefault();
